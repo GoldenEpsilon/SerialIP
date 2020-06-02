@@ -3,15 +3,28 @@ import socket
 import serial
 import sys
 
+localBoard = [];
+for i in range(10):
+	localBoard.append([]);
+	for j in range(6):
+		localBoard[i].append(0);
+
 baud = 115200
 timeout = 0.25
 def serialIn(serialPort, sock):
-	print('test')
+	print('Starting up! Waiting for first message.')
 	while(True):
 		x = sock.recv(8)
 		if(x == b'$'):
 			print("RECV: ", end="")
 		print(x.decode('utf-8'), end="")
+		if(x[1:4] == "RES"):
+			temp = x[4:].split("*")[0].split(",");
+			localboard[temp[0]][temp[1]] = temp[2];
+		for j in range(6):
+			for i in range(10):
+				print(localBoard[i][j], end="");
+			print("");
 		serialPort.write(x)
 
 def serialOut(serialPort, client):
